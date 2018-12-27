@@ -54,6 +54,7 @@ def getCharacterDescription(name):
     If exists localy then get it else fecth from wiki and save to local. Clean before return.
     """
     print("getCharacterDescription", name)
+    biography = ""
     char_bios_dir = os.listdir(DATA_FOLDER)
     wanted_file = name + ".txt"
     if wanted_file in char_bios_dir:
@@ -61,11 +62,14 @@ def getCharacterDescription(name):
         biography = getFromText(name)        
     # else
     else:
-        html = getFromWiki(name)
-        # clean
-        description = html["parse"]["text"]["*"]
-        biography = cleanhtml(description)   
-        saveToText(name, biography)        
+        try:
+            html = getFromWiki(name)
+            # clean
+            description = html["parse"]["text"]["*"]
+            biography = cleanhtml(description)   
+            saveToText(name, biography)        
+        except Exception as identifier:
+            print("Error: " , str(identifier))
 
     return biography
     

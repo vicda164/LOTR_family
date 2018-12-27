@@ -57,5 +57,8 @@ def fecthBio(name):
     }
 
     R = S.get(url=URL, params=PARAMS)
-    DATA = R.json()    
+    DATA = R.json()
+
+    # TODO check for error
+
     return DATA
