@@ -1,0 +1,5 @@
+secret.py
+__pycache__
+.vscode
+apicache-py3
+data
