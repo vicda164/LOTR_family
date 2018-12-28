@@ -262,9 +262,11 @@ Name,Url,Race
 "Elfhelm","http://lotr.wikia.com//wiki/Elfhelm",Human
 "Elfhild","http://lotr.wikia.com//wiki/Elfhild",Human
 "Elfwine","http://lotr.wikia.com//wiki/Elfwine",Human
-"Elladan and Elrohir","http://lotr.wikia.com//wiki/Elladan_and_Elrohir",Elf
+"Elladan","http://lotr.wikia.com//wiki/Elladan_and_Elrohir",Elf
+"Elrohir","http://lotr.wikia.com//wiki/Elladan_and_Elrohir",Elf
 "Elphir","http://lotr.wikia.com//wiki/Elphir",Human
 "Elrond","http://lotr.wikia.com//wiki/Elrond",Elf
+"Elros", "https://lotr.wikia.com/wiki/Elros", Elf
 "Emeldir","http://lotr.wikia.com//wiki/Emeldir",Human
 "Enel","http://lotr.wikia.com//wiki/Enel",Elf
 "Enelyë","http://lotr.wikia.com//wiki/Enely%C3%AB",Elf
@@ -324,7 +326,8 @@ Name,Url,Race
 "Frór","http://lotr.wikia.com//wiki/Fr%C3%B3r",Dwarf
 "Fundin","http://lotr.wikia.com//wiki/Fundin",Dwarf
 "Fëanor","http://lotr.wikia.com//wiki/F%C3%ABanor",Elf
-"Fíli and Kíli","http://lotr.wikia.com//wiki/F%C3%ADli_and_K%C3%ADli",Dwarf
+"Fíli","http://lotr.wikia.com//wiki/F%C3%ADli_and_K%C3%ADli",Dwarf
+"Kíli","http://lotr.wikia.com//wiki/F%C3%ADli_and_K%C3%ADli",Dwarf
 "Fíriel","http://lotr.wikia.com//wiki/F%C3%ADriel",Human
 "Galadriel","http://lotr.wikia.com//wiki/Galadriel",Elf
 "Galar","http://lotr.wikia.com//wiki/Galar",Dwarf
