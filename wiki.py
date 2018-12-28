@@ -7,7 +7,7 @@
 import requests
 import secret
 
-def fecthBio(name):
+def fecthWikiPage(name, section=1):
     print("wiki: try to fecth",name)
     S = requests.Session()
     #api.php?action=login&lgname=user&lgpassword=password
@@ -49,11 +49,16 @@ def fecthBio(name):
     DATA = R.json()
 
     TITLE = name
+    """
+        section = 0 : infobox and short-description
+        section = 1 : biography
+    """
+
     PARAMS = {
         'action': "parse",
         'page': TITLE,
         'format': "json",    
-        'section': 1
+        'section': section
     }
 
     R = S.get(url=URL, params=PARAMS)

@@ -13,22 +13,23 @@ Test, Later, Elrond sent his sons Elladan, Arwen and Elrohir with the Rangers of
 """
 
 def extract_relations(character_bio=TEXT):
+    print("extract_relations")
     if character_bio == "":
         return None
 
     corpus = character_bio 
     #print(corpus)
 
-    nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.load("./model")#spacy.load("en_core_web_sm")
     doc = nlp(corpus)    
-    #for ent in doc.ents:    
-    #    print(ent.text, ent.label_)
+    for ent in doc.ents:    
+        print(ent.text, ent.label_)
 
     relations = []
 
     child_of = re.compile(".*\b(is|was|had).*son.*")
     sibbling = re.compile(".*(brother|sister|twin).*")
-    parent_to = re.compile(".*(his|her).*(sons?|daughters?).*")
+    parent_to = re.compile(".*(his|her|had|has).*(sons?|daughter?).*")
     for sent in doc.sents:    
         ents = sent.ents
         for i in range(len(ents)):
@@ -37,6 +38,8 @@ def extract_relations(character_bio=TEXT):
                 ent2 = ents[i+1]
 
                 if ent1.label_ == "PERSON" and ent2.label_ == "PERSON":                                
+                    #TODO if verb in text_between then skip?
+
                     text_between = doc[ent1.end : ent2.start]                
                     if child_of.match(text_between.text):
                         relations.append((ent1.text, ent2.text, "son_of", str(sent)))

@@ -1,6 +1,7 @@
 import sys
 import os
 import re
+import csv
 
 import wiki
 
@@ -9,25 +10,36 @@ DATA_FOLDER = "data/character_bio/"
 
 def cleanhtml(raw_html):
   cleanr = re.compile('<.*?>')
-  cleantext = re.sub(cleanr, '', raw_html)
+  cleantext = re.sub(cleanr, ', ', raw_html)
   return cleantext
 
-# read csv
-def readCSV():
+
+def readCSV(filename):
     # returns list object of csv
-    return None
+    rows = []
+    with open(filename) as csvfile:
+        reader = csv.reader(csvfile, delimiter=',', quotechar='"')
+        for i,row in enumerate(reader):
+            if i != 0:
+                rows.append(row)
+    
+    return rows
 
 
 def getFromWiki(name):
     # fetch character html-page
-    html = wiki.fecthBio(name)
+    html = wiki.fecthWikiPage(name)
     return html
 
 def getFromText(name):
     """
     Return biography as text
     """
-    filename = DATA_FOLDER + name + ".txt"
+    if ".txt" in name:
+        filename = name
+    else:
+        filename = DATA_FOLDER + name + ".txt"
+        
     try:
         with open(filename, "r") as file:
             return file.read()
@@ -47,6 +59,7 @@ def saveToText(filename, text):
             return 0 #OK
     except Exception as identifier:
         return "ERROR: " + str(identifier)
+
     
 
 def getCharacterDescription(name):
