@@ -1,7 +1,11 @@
 import plac
+import numpy
+
+
 import filemanager
 import relation_extraction
-import numpy
+import family_structure
+
 
 
 # build relation tree
@@ -42,6 +46,8 @@ def find_family_relations(name, to_read=[], read_bios=[], relations=[]):
 def run(name):  
     
     family_tree = find_family_relations(name, to_read=[name])
+    family_structure.add_relations(family_tree)
+    family_structure.draw_graph()
 
     for rel in family_tree:
         print(rel)   

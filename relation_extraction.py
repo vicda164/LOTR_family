@@ -12,6 +12,7 @@ By the end of the First Age and the War of Wrath, the Sons of Fëanor were again
 Test, Later, Elrond sent his sons Elladan, Arwen and Elrohir with the Rangers of the North to Rohan.
 """
 
+#TODO BUG sometimes return 3 or more entities for one relation. Replicate by running 'Elrond'
 def extract_relations(character_bio=TEXT):
     print("extract_relations")
     if character_bio == "":
@@ -42,14 +43,14 @@ def extract_relations(character_bio=TEXT):
 
                     text_between = doc[ent1.end : ent2.start]                
                     if child_of.match(text_between.text):
-                        relations.append((ent1.text, ent2.text, "son_of", str(sent)))
+                        relations.append((ent1.text, ent2.text, {"relation": "son_of", "text": str(sent)}))
 
                     elif sibbling.match(text_between.text):
-                        relations.append((ent1.text, ent2.text, "sibbling", str(sent)))
+                        relations.append((ent1.text, ent2.text, {"relation": "sibbling", "text": str(sent)}))
 
                     elif parent_to.match(text_between.text):
                         #sent.as_doc().print_tree()
-                        relations.append((ent1.text, ent2.text, "parent_to", str(sent)))                        
+                        relations.append((ent1.text, ent2.text, {"relation": "parent_to", "text":str(sent)}))                        
                         rels = listed_relation("parent_to", ent1, i, ents, sent, doc)
                         relations += rels                        
                             
@@ -67,8 +68,7 @@ def listed_relation(relation_type, ent1, _i, ents, sent, doc):
         ent_n = ents[i]
         text_between = doc[last_ent.end: ent_n.start]        
         if text_between.text in ["and",","]:                               
-            relations.append((ent1.text, ent_n.text, relation_type, str(sent)))
-    
+            relations.append((ent1.text, ent_n.text, {"relation": relation_type, "text": str(sent)}))
     return relations
 
 
