@@ -5,7 +5,7 @@ import numpy as np
 
 import filemanager
 import relation_extraction
-import family_structure
+import graph
 import silver_standard as silver
 
 def find_family_relations(name, to_read=[], read_bios=[], relations=[]):
@@ -76,30 +76,66 @@ def get_silver_family(name):
 
     if name in os.listdir("./data/silver/"):
         print("EXISTS")
-        validation_data = family_structure.get_family_tree(wanted_file)
+        validation_data = graph.get(wanted_file)
     else:
         #if not os.path.exists(wanted_file):
         #    with open(wanted_file, 'w'): pass            
         validation_data = create_validation_data(name, [name])
         print("Val_data:", validation_data)
-        silver = family_structure.add_relations(validation_data, file=wanted_file)
+        if validation_data != []:        
+            graph.add_relations(validation_data, file=wanted_file)
         
     return validation_data
 
-def _validate(family, silver):
+def _validate(family_set, silver_set):
     #TODO compare guess and silver
-    return None
+    """
+        recall = (relevant + retrived) / relevant
+
+        precision = (relevant + retrived) / retrived
+    """
+
+    print("_validate:")
+    print("family:" ,family_set)
+    print("silver:" ,silver_set)
+
+    false_positive = []
+    true_positive = []
+
+    for relation in family_set:
+        print(relation)
+        rel = relation[2]["relation"]
+        edge = (relation[0], relation[1], {"relation":rel})
+        if edge in silver_set:
+            true_positive.append(edge)
+        else:
+            false_positive.append(edge)
+
+    if len(family_set) == 0:
+        return (0,0) 
+    recall = len(true_positive) / len(silver_set)
+    precision = len(true_positive) / len(family_set)
+    f1 = (2 * recall * precision) / (recall + precision)
+
+    return (recall, precision, f1)
 
 @plac.annotations(
     name=("Character name", "positional", None, str),
+    disbale_cache=("Delete family tree from root name Name", "flag", "r"),
     validate=("Validate", "flag", "v"),
     draw=("Draw graph", "flag", "d"))
-def run(name, validate, draw):  
+def run(name, disbale_cache, validate, draw):  
+    if disbale_cache or name not in os.listdir("./data/family/"):
+        #TODO remove files
+        family_tree = find_family_relations(name, to_read=[name])
+        family = graph.add_relations(family_tree, "./data/family/"+name)
+        return
+    else:     
+        family = graph.get("./data/family/"+name)
     
-    family_tree = find_family_relations(name, to_read=[name])
-    family = family_structure.add_relations(family_tree, "./data/family/"+name)
-    #family_structure.draw_graph()
+    #graph.draw_graph()
     
+    #family = graph.get("./data/family/Elrond")
 
     #for rel in family_tree:
     #    print(rel)   
@@ -107,16 +143,21 @@ def run(name, validate, draw):
     
     if validate:
         silver = get_silver_family(name)
-        _validate(family_tree, silver)
+        (recall, precision, f1) = _validate(family, silver)
+
+        print("recall:", recall)
+        print("precisision:", precision)
+        print("F1:", f1)
+
 
         if draw:
             file1 = "./data/family/" + name
             file2 = "./data/silver/" + name
-            family_structure.draw_graph(file1, file2) 
+            graph.draw(file1, file2) 
     else:
         if draw:
             file1 = "./data/family/" + name            
-            family_structure.draw_graph(file1) 
+            graph.draw(file1) 
 
 if __name__ == "__main__":
     plac.call(run)

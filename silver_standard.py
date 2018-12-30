@@ -2,7 +2,8 @@ import re
 import filemanager
 import wiki
 import os
-import family_structure
+
+import graph
 
 re_spouse = re.compile("Spouse\W*([ a-zA-Zí]*)")
 re_children = re.compile("Children\W*([, a-zA-Zí]*)")
@@ -15,12 +16,12 @@ def str_to_dict(name, str_data):
     if spouse != None:
         s = spouse.group(1)
         result.append((str(name), str(s), {"relation": "spouse"}))
-    if children != None:        
-        c = [c.strip() for c in children.group(1).split(",") if c != ""]   
+    if children != None:            
+        c = [c.strip() for c in children.group(1).split(",") if not c]  #note: empty string is false
         for child in c:
             result.append((str(name), str(child), {"relation": "child"}))         
     if sibling != None:
-        s = [s.strip() for s in sibling.group(1).split(",") if s != ""]   
+        s = [s.strip() for s in sibling.group(1).split(",") if not s]   
         for sibling in s:
             result.append((str(name), str(sibling), {"relation":"sibling"}))
         
@@ -29,29 +30,26 @@ def str_to_dict(name, str_data):
     return result
 
 def get_silver(name):
-    infobox_data = filemanager.getCharacterInfobox(name) #wiki.fecthWikiPage(name, section=0)
-    #if infobox_data != None:
-    #str_data = filemanager.cleanhtml(infobox_data["parse"]["text"]["*"])
+    infobox_data = filemanager.getCharacterInfobox(name) #wiki.fecthWikiPage(name, section=0)    
     print("get_silver")
     print(infobox_data)
     if infobox_data is None or infobox_data == [] or infobox_data == "":
         return None
 
     format_data = []
+    filter = ["Unnamed", "Unnamed wife", "Unknown", "None"]
     for row in infobox_data:
-        format_data.append((row[0], row[1],(row[2])))
-    #silver_data = str_to_dict(name, infobox_data)
-    #return silver_data
-    #return None
+        if row[0] or row[1] or row[0] in filter or row[1] in filter:
+            # if either names are empty then skip
+            format_data.append((row[0], row[1], (row[2])))    
     return format_data
 
 
 if __name__ == '__main__':
     
-    #names = filemanager.lotr_char_names()
-    #for name in names:
-    silver_data = get_silver("Arwen")
-    print(silver_data)
-        #if silver_data != {}:
-        #    family_structure.add_relations(silver_data, file='./data/silver/')
+    names = filemanager.lotr_char_names()
+    for name in names:
+        silver_data = get_silver(name)    
+        if silver_data != {}:
+            graph.add_relations(silver_data, file='./data/test')
         

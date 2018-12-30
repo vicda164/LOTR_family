@@ -1,13 +1,13 @@
 import os
 import random
+from collections import defaultdict
+
+
 import numpy as np
 import spacy
-from collections import defaultdict
 
 import filemanager
 
-
- 
 def create_train_data():
     training_set = [] #np.empty((1000, 5))
     nlp = spacy.load("en_core_web_sm")

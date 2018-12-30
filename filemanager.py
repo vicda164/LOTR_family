@@ -7,7 +7,7 @@ import numpy as np
 
 import wiki
 import silver_standard
-import family_structure
+import graph
 
 DATA_FOLDER = "data/character_bio/"
 
@@ -33,8 +33,6 @@ def writeCSV(filename, content):
         writer = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerows(content)
-
-
 
 
 def lotr_char_names():
@@ -121,7 +119,7 @@ def getCharacterInfobox(name):
     #check if stored 
         print("PASS")
         #infobox = readCSV(data_foler + wanted_file)        
-        infobox = family_structure.get_family_tree(data_foler + name)
+        infobox = graph.get(data_foler + name)
     # else
     else:
         try:
@@ -133,8 +131,8 @@ def getCharacterInfobox(name):
             text = cleanhtml(uncleantext)               
             infobox = silver_standard.str_to_dict(name, text)            
             save_to = "./data/character_infobox/" + name
-            family_structure.add_relations(infobox, save_to)# writeCSV(save_to, infobox)
-            #family_structure.add_relations(silver, file=save_to)                 
+            graph.add_relations(infobox, save_to)# writeCSV(save_to, infobox)
+            #graph.add_relations(silver, file=save_to)                 
         except Exception as identifier:
             print("Error: " , str(identifier))
 
