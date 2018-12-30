@@ -25,16 +25,16 @@ def add_relations(relations, file="./data/edgelist"):
     
     print(graph.edges)
     nx.write_edgelist(graph, file, delimiter="|")#, data=(("realtion", str),("text",str),))
-    return graph
+    return graph.edges(data=True)
 
 
-def get_family_tree(file):
+def get(file):
     #print("get_family_tree", file)
     graph = nx.read_edgelist(file, delimiter="|").edges(data=True)
     #print(graph)
     return graph
 
-def draw_graph(file, file2=None):
+def draw(file, file2=None):
     graph = nx.read_edgelist(file, delimiter="|")
     pos = nx.spring_layout(graph, scale=2)
     edge_labels = nx.get_edge_attributes(graph, 'relation')
@@ -58,7 +58,7 @@ def draw_graph(file, file2=None):
 if __name__ == '__main__':
     #add_relations([("Sansa", "Jon", {"relation":"siblings", "text":"text bla bla"})])
     #draw_graph()
-    get_family_tree("data/character_infobox/Elrond")
+    get("data/character_infobox/Elrond")
 
 
 """
