@@ -7,21 +7,13 @@ from collections import defaultdict
 import filemanager
 
 
-def lotr_char_names():
-    #get list of csv rows
-    #extract Names    
-    rows = filemanager.readCSV("kaggle_data/Characters.csv")
-    rows = np.array(rows)
-    print(rows.shape) 
-    names = rows[:,0] # get first column        
-    return names
  
 def create_train_data():
     training_set = [] #np.empty((1000, 5))
     nlp = spacy.load("en_core_web_sm")
 
-    #list of existing names in LOTR
-    names = lotr_char_names()
+    #list of existing names in LOTR    
+    names = filemanager.lotr_char_names()
     print(len(names))
     filenames = os.listdir("data/character_bio/")
     filenames = ["Elrond.txt"] # TODO only for testing

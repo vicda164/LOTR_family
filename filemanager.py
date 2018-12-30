@@ -3,8 +3,11 @@ import os
 import re
 import csv
 
-import wiki
+import numpy as np
 
+import wiki
+import silver_standard
+import family_structure
 
 DATA_FOLDER = "data/character_bio/"
 
@@ -24,6 +27,24 @@ def readCSV(filename):
                 rows.append(row)
     
     return rows
+
+def writeCSV(filename, content):
+    with open(filename, 'w') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',',
+                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer.writerows(content)
+
+
+
+
+def lotr_char_names():
+    #get list of csv rows
+    #extract Names    
+    rows = readCSV("kaggle_data/Characters.csv")
+    rows = np.array(rows)
+    print(rows.shape) 
+    names = rows[:,0] # get first column        
+    return names
 
 
 def getFromWiki(name):
@@ -77,6 +98,8 @@ def getCharacterDescription(name):
     else:
         try:
             html = getFromWiki(name)
+            if html == "":
+                return None
             # clean
             description = html["parse"]["text"]["*"]
             biography = cleanhtml(description)   
@@ -86,9 +109,39 @@ def getCharacterDescription(name):
 
     return biography
     
-        
+def getCharacterInfobox(name):
+    """
+    If exists localy then get it else fecth from wiki and save to local. Clean before return.
+    """
+    print("getCharacterInfobox", name)
+    infobox = None
+    data_foler = "./data/character_infobox/"
+    dir = os.listdir(data_foler)    
+    if name in dir:
+    #check if stored 
+        print("PASS")
+        #infobox = readCSV(data_foler + wanted_file)        
+        infobox = family_structure.get_family_tree(data_foler + name)
+    # else
+    else:
+        try:
+            html = wiki.fecthWikiPage(name, section=0)
+            if html == "":
+                return None            
+            # clean, structure and save
+            uncleantext = html["parse"]["text"]["*"]        
+            text = cleanhtml(uncleantext)               
+            infobox = silver_standard.str_to_dict(name, text)            
+            save_to = "./data/character_infobox/" + name
+            family_structure.add_relations(infobox, save_to)# writeCSV(save_to, infobox)
+            #family_structure.add_relations(silver, file=save_to)                 
+        except Exception as identifier:
+            print("Error: " , str(identifier))
+
+    return infobox
          
 if __name__ == '__main__':
+    #os.makedirs("./data/character_infobox/")
     args = sys.argv[1:]
     print(args)
     if len(args) < 1:
@@ -101,3 +154,8 @@ if __name__ == '__main__':
     print("RESULT")
     print(char_description)
     #return char_description
+
+
+    infobox = getCharacterInfobox(name)
+    print("RESULT")
+    print(infobox)

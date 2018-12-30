@@ -43,14 +43,14 @@ def extract_relations(character_bio=TEXT):
 
                     text_between = doc[ent1.end : ent2.start]                
                     if child_of.match(text_between.text):
-                        relations.append((ent1.text, ent2.text, {"relation": "son_of", "text": str(sent)}))
+                        relations.append((ent1.text, ent2.text, {"relation": "child", "text": str(sent)}))
 
                     elif sibbling.match(text_between.text):
-                        relations.append((ent1.text, ent2.text, {"relation": "sibbling", "text": str(sent)}))
+                        relations.append((ent1.text, ent2.text, {"relation": "sibling", "text": str(sent)}))
 
                     elif parent_to.match(text_between.text):
                         #sent.as_doc().print_tree()
-                        relations.append((ent1.text, ent2.text, {"relation": "parent_to", "text":str(sent)}))                        
+                        relations.append((ent1.text, ent2.text, {"relation": "parent", "text":str(sent)}))                        
                         rels = listed_relation("parent_to", ent1, i, ents, sent, doc)
                         relations += rels                        
                             

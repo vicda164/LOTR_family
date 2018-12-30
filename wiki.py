@@ -65,5 +65,8 @@ def fecthWikiPage(name, section=1):
     DATA = R.json()
 
     # TODO check for error
-
-    return DATA
+    if "parse" in DATA:
+        return DATA
+    else:
+        return ""
+    
