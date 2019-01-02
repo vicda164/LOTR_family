@@ -7,7 +7,9 @@
 import requests
 import secret
 
+
 def fecthWikiPage(name, section=1):
+    name = name.strip() #remove whitespace
     print("wiki: try to fecth",name)
     S = requests.Session()
     #api.php?action=login&lgname=user&lgpassword=password
@@ -70,3 +72,6 @@ def fecthWikiPage(name, section=1):
     else:
         return ""
     
+
+if __name__ == '__main__':
+    print(fecthWikiPage(" Elladan"))

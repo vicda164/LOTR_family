@@ -11,10 +11,11 @@ def add_relations(relations, file="./data/edgelist"):
     # TODO Check if file exists
     print("Add relations")
     if not os.path.exists(file):
-        graph = nx.Graph()
+        #create a directed graph which can have multiple edges between two nodes
+        graph = nx.MultiDiGraph()
         with open(file, 'w'): pass
     else:
-        graph = nx.read_edgelist(file, delimiter="|")#, data=(("realtion", str),("text",str),))
+        graph = nx.read_edgelist(file, delimiter="|")
 
     
     try:
@@ -24,7 +25,12 @@ def add_relations(relations, file="./data/edgelist"):
         print("Error: ", str(identifier))        
     
     print(graph.edges)
-    nx.write_edgelist(graph, file, delimiter="|")#, data=(("realtion", str),("text",str),))
+
+    try:
+        nx.write_edgelist(graph, file, delimiter="|")
+    except Exception as identifier:
+        print("ERROR:" , str(identifier))
+    
     return graph.edges(data=True)
 
 
@@ -36,7 +42,7 @@ def get(file):
 
 def draw(file, file2=None):
     graph = nx.read_edgelist(file, delimiter="|")
-    pos = nx.spring_layout(graph, scale=2)
+    pos = nx.spring_layout(graph)
     edge_labels = nx.get_edge_attributes(graph, 'relation')
 
     nx.draw(graph, with_labels=True, font_weight='bold')
@@ -45,7 +51,7 @@ def draw(file, file2=None):
 
     if file2 != None:
         g2= nx.read_edgelist(file, delimiter="|")
-        pos = nx.spring_layout(g2, scale=2)
+        pos = nx.spring_layout(g2)
         edge_labels = nx.get_edge_attributes(g2, 'relation')
 
         nx.draw(g2, with_labels=True, font_weight='bold')

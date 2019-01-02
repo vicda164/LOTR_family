@@ -11,10 +11,10 @@ import graph
 
 DATA_FOLDER = "data/character_bio/"
 
-def cleanhtml(raw_html):
-  cleanr = re.compile('<.*?>')
-  cleantext = re.sub(cleanr, ', ', raw_html)
-  return cleantext
+def cleanhtml(raw_html, delimiter=", "):
+    cleanr = re.compile('<.*?>')
+    cleantext = re.sub(cleanr, delimiter, raw_html)
+    return cleantext
 
 
 def readCSV(filename):
@@ -49,6 +49,32 @@ def getFromWiki(name):
     # fetch character html-page
     html = wiki.fecthWikiPage(name)
     return html
+
+def _getDescriptionAndBio(name):
+    """
+        returns text from both biography section and the text
+        from first introduction section(but removes infobox)
+    """
+    p_reg = re.compile("<p>\n*(.*)\n*</p>")
+    biography_dirty = wiki.fecthWikiPage(name, section=1)
+    if not biography_dirty:
+        print("WARNING: no biography section found for ", name)
+        return None
+    
+    biography_dirty = biography_dirty["parse"]["text"]["*"]
+    biography = cleanhtml(biography_dirty, delimiter="")
+
+    description_dirty = wiki.fecthWikiPage(name, section=0)
+    if not description_dirty:
+        print("WARNING: no description section found for ", name)
+        return None
+
+    description_dirty = description_dirty["parse"]["text"]["*"]      
+    description = p_reg.findall(description_dirty)    
+    description = " ".join(description)
+    description = cleanhtml(description, delimiter="")    
+    description += biography    
+    return description
 
 def getFromText(name):
     """
@@ -95,13 +121,11 @@ def getCharacterDescription(name):
     # else
     else:
         try:
-            html = getFromWiki(name)
-            if html == "":
+            biography = _getDescriptionAndBio(name)
+            if biography is not None:                 
+                saveToText(name, biography)
+            else:
                 return None
-            # clean
-            description = html["parse"]["text"]["*"]
-            biography = cleanhtml(description)   
-            saveToText(name, biography)        
         except Exception as identifier:
             print("Error: " , str(identifier))
 
@@ -128,7 +152,7 @@ def getCharacterInfobox(name):
                 return None            
             # clean, structure and save
             uncleantext = html["parse"]["text"]["*"]        
-            text = cleanhtml(uncleantext)               
+            text = cleanhtml(uncleantext, delimiter=", ")               
             infobox = silver_standard.str_to_dict(name, text)            
             save_to = "./data/character_infobox/" + name
             graph.add_relations(infobox, save_to)# writeCSV(save_to, infobox)
@@ -139,7 +163,8 @@ def getCharacterInfobox(name):
     return infobox
          
 if __name__ == '__main__':
-    #os.makedirs("./data/character_infobox/")
+    #os.makedirs("./data/character_infobox/")   
+    """ 
     args = sys.argv[1:]
     print(args)
     if len(args) < 1:
@@ -157,3 +182,5 @@ if __name__ == '__main__':
     infobox = getCharacterInfobox(name)
     print("RESULT")
     print(infobox)
+    """    
+    print(_getDescriptionAndBio("Elrond"))

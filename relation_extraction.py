@@ -23,16 +23,18 @@ def extract_relations(character_bio=TEXT):
 
     nlp = spacy.load("./model")#spacy.load("en_core_web_sm")
     doc = nlp(corpus)    
-    for ent in doc.ents:    
-        print(ent.text, ent.label_)
+    #for ent in doc.ents:    
+    #    print(ent.text, ent.label_)
 
     relations = []
 
-    child_of = re.compile(".*\b(is|was|had).*son.*")
+    child_of = re.compile(".*\b(is|was|had).*(son|daughter).*|.*(son|daughter) of .*")
     sibbling = re.compile(".*(brother|sister|twin).*")
-    parent_to = re.compile(".*(his|her|had|has).*(sons?|daughter?).*")
+    parent_to = re.compile(".*(his|her|had|has).*(sons?|daughter?)|.*(mother|father) (to|of).*")
+    spouse = re.compile(".*(wife|husband|married to|wedded).*")
     for sent in doc.sents:    
         ents = sent.ents
+        #sent.text.replace("he", name) #TODO: should it be a good idea to replace?
         for i in range(len(ents)):
             if i+1 < len(ents):            
                 ent1 = ents[i] 
@@ -44,15 +46,22 @@ def extract_relations(character_bio=TEXT):
                     text_between = doc[ent1.end : ent2.start]                
                     if child_of.match(text_between.text):
                         relations.append((ent1.text, ent2.text, {"relation": "child", "text": str(sent)}))
+                        rels = listed_relation("child", ent1, i, ents, sent, doc)
+                        relations += rels
 
                     elif sibbling.match(text_between.text):
                         relations.append((ent1.text, ent2.text, {"relation": "sibling", "text": str(sent)}))
+                        rels = listed_relation("sibling", ent1, i, ents, sent, doc)
+                        relations += rels
 
                     elif parent_to.match(text_between.text):
                         #sent.as_doc().print_tree()
                         relations.append((ent1.text, ent2.text, {"relation": "parent", "text":str(sent)}))                        
-                        rels = listed_relation("parent_to", ent1, i, ents, sent, doc)
-                        relations += rels                        
+                        rels = listed_relation("parent", ent1, i, ents, sent, doc)
+                        relations += rels
+
+                    elif spouse.search(text_between.text):
+                        relations.append((ent1.text, ent2.text, {"relation": "spouse", "text": str(sent)}))
                             
     return relations
 
