@@ -42,21 +42,26 @@ def get(file):
 
 def draw(file, file2=None):
     graph = nx.read_edgelist(file, delimiter="|")
+    if file2 != None:
+        plt.subplot()
+
     pos = nx.spring_layout(graph)
     edge_labels = nx.get_edge_attributes(graph, 'relation')
 
-    nx.draw(graph, with_labels=True, font_weight='bold')
+    nx.draw(graph, pos=pos, with_labels=True, font_weight='bold', font_size=14)
 
-    nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels)
+    nx.draw_networkx_edge_labels(graph, pos=pos, edge_labels=edge_labels, font_size=16)
+    plt.show()
 
     if file2 != None:
-        g2= nx.read_edgelist(file, delimiter="|")
-        pos = nx.spring_layout(g2)
+        plt.subplot()
+        g2= nx.read_edgelist(file2, delimiter="|")
+        pos2 = nx.spring_layout(g2)
         edge_labels = nx.get_edge_attributes(g2, 'relation')
 
-        nx.draw(g2, with_labels=True, font_weight='bold')
+        nx.draw(g2, pos=pos2, with_labels=True, font_weight='bold', node_color="b")
 
-        nx.draw_networkx_edge_labels(g2, pos, edge_labels=edge_labels)
+        nx.draw_networkx_edge_labels(g2, pos=pos2, edge_labels=edge_labels)
 
     #nx.draw_shell(g, nlist=[range(5, 10), range(5)], with_labels=True, font_weight='bold')
     plt.show()

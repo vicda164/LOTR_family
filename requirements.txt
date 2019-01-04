@@ -1,2 +1,5 @@
 spacy
 plac
+numpy
+matplotlib
+networkx

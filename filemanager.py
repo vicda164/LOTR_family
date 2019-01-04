@@ -17,21 +17,21 @@ def cleanhtml(raw_html, delimiter=", "):
     return cleantext
 
 
-def readCSV(filename):
+def readCSV(filename, quotechar='"', delimiter=','):
     # returns list object of csv
     rows = []
     with open(filename) as csvfile:
-        reader = csv.reader(csvfile, delimiter=',', quotechar='"')
+        reader = csv.reader(csvfile, delimiter=delimiter, quotechar=quotechar)
         for i,row in enumerate(reader):
             if i != 0:
                 rows.append(row)
     
     return rows
 
-def writeCSV(filename, content):
+def writeCSV(filename, content, delimiter=',', quotechar='|'):
     with open(filename, 'w') as csvfile:
-        writer = csv.writer(csvfile, delimiter=',',
-                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        writer = csv.writer(csvfile, delimiter=delimiter,
+                                quotechar=quotechar, quoting=csv.QUOTE_MINIMAL)
         writer.writerows(content)
 
 
@@ -55,6 +55,7 @@ def _getDescriptionAndBio(name):
         returns text from both biography section and the text
         from first introduction section(but removes infobox)
     """
+    #TODO TEST!
     p_reg = re.compile("<p>\n*(.*)\n*</p>")
     biography_dirty = wiki.fecthWikiPage(name, section=1)
     if not biography_dirty:
@@ -62,6 +63,8 @@ def _getDescriptionAndBio(name):
         return None
     
     biography_dirty = biography_dirty["parse"]["text"]["*"]
+    biography_dirty = p_reg.findall(biography_dirty)
+    biography_dirty = " ".join(biography_dirty)
     biography = cleanhtml(biography_dirty, delimiter="")
 
     description_dirty = wiki.fecthWikiPage(name, section=0)
@@ -164,7 +167,6 @@ def getCharacterInfobox(name):
          
 if __name__ == '__main__':
     #os.makedirs("./data/character_infobox/")   
-    """ 
     args = sys.argv[1:]
     print(args)
     if len(args) < 1:
@@ -182,5 +184,3 @@ if __name__ == '__main__':
     infobox = getCharacterInfobox(name)
     print("RESULT")
     print(infobox)
-    """    
-    print(_getDescriptionAndBio("Elrond"))

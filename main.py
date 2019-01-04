@@ -7,6 +7,7 @@ import filemanager
 import relation_extraction
 import graph
 import silver_standard as silver
+import train
 
 def find_family_relations(to_read=[], read_bios=[], relations=[]):
     """
@@ -38,7 +39,7 @@ def find_family_relations(to_read=[], read_bios=[], relations=[]):
         return find_family_relations(to_read=to_read, read_bios=read_bios, relations=relations) 
     
     relations += rel    
-    print(rel)
+    #print(rel)
     relatives = np.array(rel)[:,1] # get column 1
     relatives = [r for r in relatives if r not in read_bios]
     to_read += relatives
@@ -67,7 +68,7 @@ def create_validation_data(to_read=[], read_bios=[], relations=[]):
             return relations
 
     relations += rel
-    print("rel:", rel)
+    #print("rel:", rel)
     relatives = np.array(rel)[:,1]
     relatives = [r for r in relatives if r not in read_bios]
     to_read += relatives
@@ -79,13 +80,13 @@ def get_silver_family(name):
     validation_data = []
 
     if name in os.listdir("./data/silver/"):
-        print("EXISTS")
+        #print("EXISTS")
         validation_data = graph.get(wanted_file)
     else:
         #if not os.path.exists(wanted_file):
         #    with open(wanted_file, 'w'): pass            
         validation_data = create_validation_data([name])
-        print("Val_data:", validation_data)
+        #print("Val_data:", validation_data)
         if validation_data != []:        
             graph.add_relations(validation_data, file=wanted_file)
         
@@ -129,8 +130,27 @@ def _validate(family_set, silver_set):
     name=("Character name", "positional", None, str),
     disbale_cache=("Delete family tree from root name Name", "flag", "r"),
     validate=("Validate", "flag", "v"),
-    draw=("Draw graph", "flag", "d"))
-def run(name, disbale_cache, validate, draw):  
+    draw=("Draw graph", "flag", "d"),
+    fetchall=("Fetch all character desciptions of names in kaggle_data/Characters","flag","f"))
+def run(name, disbale_cache, validate, draw,fetchall):
+    if fetchall:
+        print("Fetch all descriptions")
+        names = filemanager.lotr_char_names()
+        for name in names:
+            filemanager.getCharacterDescription(name)
+        print("DONE")
+        
+        #print("Train")
+        #status = train.train(training_set)
+        #if status == "OK":
+        #    print("DONE")
+        #    print("Successfully finished")
+        #else:
+        #    print("Error while training")
+        return
+
+
+    
     if disbale_cache or name not in os.listdir("./data/family/"):        
         if name in os.listdir("./data/family/"):
             os.remove("./data/family/" + name)            
@@ -167,4 +187,11 @@ def run(name, disbale_cache, validate, draw):
 
 
 if __name__ == "__main__":
+    if "data" not in os.listdir():
+        os.makedirs("./data/character_bio")
+        os.makedirs("./data/character_infobox")
+        os.makedirs("./data/family")
+        os.makedirs("./data/silver")
+    if "model" not in os.listdir():
+        os.makedirs("./model")
     plac.call(run)

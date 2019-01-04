@@ -1,3 +1,4 @@
+import ast
 import os
 import random
 from collections import defaultdict
@@ -14,9 +15,9 @@ def create_train_data():
 
     #list of existing names in LOTR    
     names = filemanager.lotr_char_names()
-    print(len(names))
+    #print(len(names))
     filenames = os.listdir("data/character_bio/")
-    filenames = ["Elrond.txt"] # TODO only for testing
+    filenames = ["Elrond.txt","Elros.txt", "Arwen.txt","Aragorn II Elessar.txt", "Galadriel.txt"] # TODO only for testing
     count = defaultdict(int)
     for filename in filenames:
         filename = "data/character_bio/" + filename
@@ -48,10 +49,11 @@ def create_train_data():
 
                             start2_idx = ent.end_char + 4 #'and '
                             end2_idx = start2_idx + len(name2)
-    
+                            count[name1] += 1
+                            count[name2] += 1
 
-                            entities.append(( start1_idx, end1_idx, "PERSON"))
-                            entities.append(( start2_idx, end2_idx, "PERSON"))
+                            entities.append((start1_idx, end1_idx, "PERSON"))
+                            entities.append((start2_idx, end2_idx, "PERSON"))
 
                         else:
                             #print("EXIST:",name, doc[ent.start], doc[ent.end] , sentance)
@@ -67,9 +69,10 @@ def create_train_data():
             if len(entities) > 0:
                 training_set.append([str(sentance),  {"entities" : entities}])
 
-    for t in training_set:
-        print(t)
+    #for t in training_set:
+    #    print(t)
  
+    print(count)
     return training_set
 
 
@@ -82,15 +85,28 @@ def train(train_set):
 
     nlp = spacy.load("en_core_web_sm")#spacy.blank('en')
     optimizer = nlp.begin_training()
-    for i in range(len(train_set)):
-        random.shuffle(train_set)
-        for text, annotations in train_set:            
-            #annotations = {"entities" : annotations} # adjust format            
-            nlp.update([text], [annotations], sgd=optimizer)
-    nlp.to_disk('./model')
+    other_pipes = [pipe for pipe in nlp.pipe_names if pipe != "ner"]
+    print("0 of", len(train_set))
+    with nlp.disable_pipes(*other_pipes):  # only train NER
+        for i in range(len(train_set)):
+            random.shuffle(train_set)
+            for text, annotations in train_set:            
+                #annotations = {"entities" : annotations} # adjust format            
+                annotations = ast.literal_eval(annotations)
+                try:
+                    nlp.update([text], [annotations], sgd=optimizer)
+                except Exception as identifier:
+                    print("ERROR:", str(identifier))
+                    nlp.to_disk('./model')
+            
+            if i % 10 == 0:
+                print(i,"of",len(train_set))
 
-    return None
+    nlp.to_disk('./model')
+    return "OK"
 
 if __name__ == '__main__':
     train_set = create_train_data()
-    train(train_set)
+    #filemanager.writeCSV("./train_set_val", train_set, delimiter="|",quotechar='"')
+    #train_set = filemanager.readCSV("./train_set", delimiter="|",quotechar='"')
+    #train(train_set)

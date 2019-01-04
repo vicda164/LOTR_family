@@ -1,0 +1,96 @@
+
+FOUND:
+Elrond|Elros|{'relation': 'sibling', 'text': 'Elrond and his twin brother Elros were captured and raised by Maglor a Son of Fëanor.'}
+Elrond|Elrohir|{'relation': 'parent', 'text': 'Later, Elrond sent his sons Elladan and Elrohir with the Rangers of the North to Rohan.'}
+Elrond|Celebrían|{'relation': 'spouse', 'text': 'In the year TA 109, Elrond wedded Celebrían.'}
+Elrond|Elladan|{'relation': 'parent', 'text': 'Later, Elrond sent his sons Elladan and Elrohir with the Rangers of the North to Rohan.'}
+Elros|Maglor|{'relation': 'sibling', 'text': 'From then on, Elros and his brother were raised by Maglor.'}
+Maglor|Amon Ereb|{'relation': 'sibling', 'text': 'Afterwards, Maglor and his surviving brothers dwelt on Amon Ereb in East Beleriand.'}
+
+SILVER:
+Aragorn II Elessar|Arwen|{'relation': 'spouse'}
+several daughters|Arwen|{'relation': 'parent'}
+Elrond|Arwen|{'relation': 'parent'}
+Elrond|Elrohir|{'relation': 'parent'}
+Elrond|Elros|{'relation': 'sibling'}
+Elrond|Elros|{'relation': 'sibling'}
+Elrond|Elladan|{'relation': 'parent'}
+Elrond|Celebrían|{'relation': 'spouse'}
+Elrond|Celebrían|{'relation': 'spouse'}
+Vardamir Nólimon|Elros|{'relation': 'parent'}
+Elladan|Arwen|{'relation': 'sibling'}
+Arwen|Elrohir|{'relation': 'sibling'}
+Eldarion|Arwen|{'relation': 'parent'}
+Tindómiel|Unknown|{'relation': 'spouse'}
+Possible unnamed wife|Manwendil|{'relation': 'spouse'}
+Atanalcar|Elros|{'relation': 'parent'}
+Elros|Manwendil|{'relation': 'parent'}
+Elros|Tindómiel|{'relation': 'parent'}
+
+
+MEASURS:
+recall: 0.2222222222222222
+precisision: 0.6666666666666666
+F1: 0.3333333333333333
+
+
+
+AFTER TRAINING:
+
+FOUND:
+Tinúviel|Beren Erchamion|{'relation': 'spouse', 'text': 'Lúthien, also known as Tinúviel, was an Elf Maiden of Doriath, the wife of Beren Erchamion, and the most beautiful of all the Children of Ilúvatar to ever live.'}
+Elros|Maglor|{'relation': 'sibling', 'text': 'From then on, Elros and his brother were raised by Maglor.'}
+Elrond|Elladan|{'relation': 'parent', 'text': 'Later, Elrond sent his sons Elladan and Elrohir with the Rangers of the North to Rohan.'}
+Elrond|Elladan|{'relation': 'parent', 'text': 'Celebrían (IPA: [keleˈbriːan]) was an Elven noblewoman, the daughter of Celeborn and Galadriel, wife of Elrond, and mother of Elrohir, Elladan and Arwen.'}
+Elrond|Celebrían|{'relation': 'spouse', 'text': 'In the year TA 109, Elrond wedded Celebrían.'}
+Elrond|Celebrían|{'relation': 'spouse', 'text': 'In TA 109, Elrond wedded Celebrían.'}
+Elrond|Arwen|{'relation': 'parent', 'text': 'Celebrían (IPA: [keleˈbriːan]) was an Elven noblewoman, the daughter of Celeborn and Galadriel, wife of Elrond, and mother of Elrohir, Elladan and Arwen.'}
+Elrond|Elrohir|{'relation': 'parent', 'text': 'Later, Elrond sent his sons Elladan and Elrohir with the Rangers of the North to Rohan.'}
+Elrond|Elrohir|{'relation': 'parent', 'text': 'Celebrían (IPA: [keleˈbriːan]) was an Elven noblewoman, the daughter of Celeborn and Galadriel, wife of Elrond, and mother of Elrohir, Elladan and Arwen.'}
+Elrond|Elros|{'relation': 'sibling', 'text': 'Elrond and his twin brother Elros were captured and raised by Maglor a Son of Fëanor.'}
+Arwen|Elladan|{'relation': 'sibling', 'text': "Before taking the Paths of the Dead, Aragorn was met by a group consisting of Dúnedain, and Arwen's brothers, Elladan and Elrohir."}
+Arwen|Elrohir|{'relation': 'sibling', 'text': "Before taking the Paths of the Dead, Aragorn was met by a group consisting of Dúnedain, and Arwen's brothers, Elladan and Elrohir."}
+Maedhros|Beren|{'relation': 'sibling', 'text': 'Several years later, Maedhros and his brothers learned that Elwing of Doriath, granddaughter of Lúthien and Beren, had inherited the Silmaril that her grandparents had recovered from Morgoth.'}
+Maedhros|Maglor|{'relation': 'sibling', 'text': "Maedhros and his brother Maglor took Elwing's sons under their protection."}
+Maedhros|Lúthien|{'relation': 'sibling', 'text': 'Several years later, Maedhros and his brothers learned that Elwing of Doriath, granddaughter of Lúthien and Beren, had inherited the Silmaril that her grandparents had recovered from Morgoth.'}
+Galadriel|Elrond|{'relation': 'spouse', 'text': 'Celebrían (IPA: [keleˈbriːan]) was an Elven noblewoman, the daughter of Celeborn and Galadriel, wife of Elrond, and mother of Elrohir, Elladan and Arwen.'}
+Sauron|Arwen Undómiel|{'relation': 'parent', 'text': 'Elrond remained in Rivendell until the destruction of the One Ring and of Sauron, after which he went to Minas Tirith to surrender the Sceptre of Annúminas to King Elessar and give his daughter Arwen Undómiel away to be married.[13]'}
+Beren|Beren|{'relation': 'parent', 'text': "Thingol was desperate not to let Beren marry his daughter, and set an impossible task as the bride price: Beren had to bring to Thingol one of the Silmarils from Morgoth's iron crown."}
+Maglor|Maedhros|{'relation': 'sibling', 'text': 'After the carnage of the cruel bloodletting, Maglor and his brother Maedhros came upon the two young sons of Eärendil and Elwing, Elrond and Elros.'}
+Maglor|Beren|{'relation': 'sibling', 'text': 'After the battle, they took a woodland life in Ossiriand.[5] Maglor and his brothers learned when Dior, the new King of Doriath, possessed a Silmaril and refused to give them the jewel that had been won by Beren and worn by Lúthien.'}
+Maglor|Elros|{'relation': 'sibling', 'text': 'After the carnage of the cruel bloodletting, Maglor and his brother Maedhros came upon the two young sons of Eärendil and Elwing, Elrond and Elros.'}
+Maglor|Elrond|{'relation': 'sibling', 'text': 'After the carnage of the cruel bloodletting, Maglor and his brother Maedhros came upon the two young sons of Eärendil and Elwing, Elrond and Elros.'}
+
+
+
+
+
+
+SILVER:
+several daughters|Arwen|{'relation': 'parent'}
+Vardamir Nólimon|Elros|{'relation': 'parent'}
+Atanalcar|Elros|{'relation': 'parent'}
+Several unnamed sisters|Eldarion|{'relation': 'sibling'}
+Several unnamed sisters|Eldarion|{'relation': 'sibling'}
+Tindómiel|Elros|{'relation': 'parent'}
+Elrond|Elladan|{'relation': 'parent'}
+Elrond|Celebrían|{'relation': 'spouse'}
+Elrond|Celebrían|{'relation': 'spouse'}
+Elrond|Arwen|{'relation': 'parent'}
+Elrond|Elrohir|{'relation': 'parent'}
+Elrond|Elros|{'relation': 'sibling'}
+Elrond|Elros|{'relation': 'sibling'}
+Manwendil|Elros|{'relation': 'parent'}
+Arwen|Elladan|{'relation': 'sibling'}
+Arwen|Aragorn II Elessar|{'relation': 'spouse'}
+Arwen|Elrohir|{'relation': 'sibling'}
+Arwen|Eldarion|{'relation': 'parent'}
+Aragorn II Elessar|Arwen|{'relation': 'spouse'}
+Aragorn II Elessar|at least two daughters|{'relation': 'parent'}
+Aragorn II Elessar|Eldarion|{'relation': 'parent'}
+
+MEASURS:
+recall: 0.47619047619047616
+precisision: 0.45454545454545453
+F1: 0.46511627906976744
+
