@@ -14,18 +14,18 @@ matplotlib
 Run: 'python -m spacy download en'
 To get language model.
 
-## Usage
+## Usage  
 
-usage: main.py [-h] [-r] [-v] [-d] [-f] name
+usage: main.py [-h] [-r] [-v] [-d] [-f] name  
 
-positional arguments:
-  name                 Character name
+positional arguments:  
+  name                 Character name  
 
-optional arguments:
-  -h, --help           show this help message and exit
-  -r, --disbale-cache  Delete family tree from root name Name
-  -v, --validate       Validate
-  -d, --draw           Draw graph
-  -f, --fetchall       Fetch all character desciptions of names in
-                       kaggle_data/Characters
+optional arguments:  
+  -h, --help           show this help message and exit  
+  -r, --disbale-cache  Delete family tree from root name Name  
+  -v, --validate       Validate  
+  -d, --draw           Draw graph  
+  -f, --fetchall       Fetch all character desciptions of names in  
+                       kaggle_data/Characters  
 
