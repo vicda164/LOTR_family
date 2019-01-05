@@ -108,7 +108,7 @@ def _validate(family_set, silver_set):
     true_positive = []
 
     for relation in family_set:
-        print(relation)
+        #print(relation)
         rel = relation[2]["relation"]
         edge = (relation[0], relation[1], {"relation":rel})
         if edge in silver_set:
@@ -128,6 +128,7 @@ def _validate(family_set, silver_set):
 
 @plac.annotations(
     name=("Character name", "positional", None, str),
+    #model=("Model to use", "option", "m")
     disbale_cache=("Delete family tree from root name Name", "flag", "r"),
     validate=("Validate", "flag", "v"),
     draw=("Draw graph", "flag", "d"),
@@ -166,6 +167,7 @@ def run(name, disbale_cache, validate, draw,fetchall):
 
     print("RUN 1")    
     if validate:
+        #TODO BUG? get_silver_family is inconsistant
         silver = get_silver_family(name)
         (recall, precision, f1) = _validate(family, silver)
 
