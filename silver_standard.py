@@ -5,17 +5,17 @@ import os
 
 import graph
 
-re_spouse = re.compile("Spouse\W*([ a-zA-Zíáóé]*)")
-re_children = re.compile("Children\W*([, a-zA-Zíáóé]*)")
-re_sibling = re.compile("Siblings\W*([, a-zA-Zíáóé]*)")
-#re_parent = re.compile("Parentage\W*([, a-zA-Zí]*)")
+re_spouse = re.compile(r"Spouse\W*([ a-zA-Zíáóé]*)")
+re_children = re.compile(r"Children\W*([, a-zA-Zíáóé]*)")
+re_sibling = re.compile(r"Siblings\W*([, a-zA-Zíáóé]*)")
+re_parent = re.compile(r"Parentage\W*([, a-zA-Zí]*)")
 def str_to_dict(name, str_data):
     str_data = str_data.replace("and", ", ")    
     result = []
     spouse = re_spouse.search(str_data)
     children = re_children.search(str_data)
     sibling = re_sibling.search(str_data)
-    #parent = re_parent.search(str_data)
+    parent = re_parent.search(str_data)
     if spouse != None:
         s = spouse.group(1)
         result.append((str(name), str(s), {"relation": "spouse"}))
@@ -27,10 +27,10 @@ def str_to_dict(name, str_data):
         s = [s.strip() for s in sibling.group(1).split(",") if s.split()]          
         for sibling in s:            
             result.append((str(name), str(sibling), {"relation":"sibling"}))
-    #if parent != None:
-    #    s = [s.strip() for s in parent.group(1).split(",") if not s]   
-    #    for parent in s:
-    #        result.append((str(name), str(parent), {"relation":"parent"}))
+    if parent != None:
+        s = [s.strip() for s in parent.group(1).split(",") if s.split()]   
+        for parent in s:
+            result.append((str(name), str(parent), {"relation":"child"}))
 
     #print("result:", result)
     return result
