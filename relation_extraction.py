@@ -1,8 +1,10 @@
-import spacy
-import plac
 import re
 import sys
 import os
+
+from spacy import displacy
+import spacy
+import plac
 
 TEXT = """ 	  
 Elrond Half-elven is the son of Eärendil and Elwing, and a great-grandson of Lúthien. 
@@ -33,20 +35,22 @@ def extract_relations(character_bio=TEXT):
     corpus = character_bio 
     #print(corpus)
 
+
     if len(os.listdir("./model")) != 0:
         nlp = spacy.load("./model")
     else:
         nlp = spacy.load("en_core_web_sm")
+
     doc = nlp(corpus)    
     #for ent in doc.ents:    
     #    print(ent.text, ent.label_)
 
     relations = []
 
-    child_of = re.compile(".*\b(is|was|had).*(son|daughter).*|.*(son|daughter) of .*")
-    sibbling = re.compile(".*(brother|sister|twin).*")
-    parent_to = re.compile(".*(his|her|had|has).*(sons?|daughter?)|.*(mother|father) (to|of).*")
-    spouse = re.compile(".*(wife|husband|married to|wedded).*")
+    child_of = re.compile(r".*\b(is|was|had).*(son|daughter).*|.*(son|daughter) of .*")
+    sibbling = re.compile(r".*(brother|sister|twin).*")
+    parent_to = re.compile(r".*(his|her|had|has).*(sons?|daughter?)|.*(mother|father) (to|of).*")
+    spouse = re.compile(r".*(wife|husband|married to|wedded).*")
     for sent in doc.sents:    
         ents = sent.ents
         #sent.text.replace("he", name) #TODO: should it be a good idea to replace?
@@ -95,9 +99,11 @@ def listed_relation(relation_type, ent1, _i, ents, sent, doc):
             relations.append((ent1.text, ent_n.text, {"relation": relation_type, "text": str(sent)}))
     return relations
 
-from spacy import displacy
-import os
+
 def test_NER(model="en_core_web_sm"):
+    """
+        Visualizing NER.
+    """
     nlp = spacy.load(model)
     doc = nlp(TEXT3)
     svg = displacy.render(doc, style='ent')
