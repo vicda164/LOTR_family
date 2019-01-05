@@ -15,7 +15,7 @@ def add_relations(relations, file="./data/edgelist"):
         graph = nx.MultiDiGraph()
         with open(file, 'w'): pass
     else:
-        graph = nx.read_edgelist(file, delimiter="|")
+        graph = nx.read_edgelist(file, delimiter="|", create_using=nx.MultiDiGraph())
 
     
     try:
@@ -40,14 +40,17 @@ def get(file):
     #print(graph)
     return graph
 
-def draw(file, file2=None):
-    graph = nx.read_edgelist(file, delimiter="|")
+def draw(file, file2=None):    
+    graph = nx.read_edgelist(file, delimiter="|", create_using=nx.Graph())
     if file2 != None:
         plt.subplot()
 
     pos = nx.spring_layout(graph)
-    edge_labels = nx.get_edge_attributes(graph, 'relation')
-
+    
+    edge_labels=dict([((u,v,),d['relation'])
+             for u,v,d in graph.edges(data=True)])
+    
+    #edge_labels = nx.get_edge_attributes(graph, 'relation')    
     nx.draw(graph, pos=pos, with_labels=True, font_weight='bold', font_size=14)
 
     nx.draw_networkx_edge_labels(graph, pos=pos, edge_labels=edge_labels, font_size=16)
@@ -55,9 +58,11 @@ def draw(file, file2=None):
 
     if file2 != None:
         plt.subplot()
-        g2= nx.read_edgelist(file2, delimiter="|")
+        g2= nx.read_edgelist(file2, delimiter="|", create_using=nx.Graph())
         pos2 = nx.spring_layout(g2)
-        edge_labels = nx.get_edge_attributes(g2, 'relation')
+        #edge_labels = nx.get_edge_attributes(g2, 'relation')
+        edge_labels=dict([((u,v,),d['relation'])
+             for u,v,d in g2.edges(data=True)])
 
         nx.draw(g2, pos=pos2, with_labels=True, font_weight='bold', node_color="b")
 
