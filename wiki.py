@@ -27,7 +27,7 @@ def fecthWikiPage(name, section=1):
     DATA = R.json()
     LOGIN_TOKEN = DATA['login']['token']
 
-    print(LOGIN_TOKEN)
+    #print(LOGIN_TOKEN)
 
     """
     Parameters:

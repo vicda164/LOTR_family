@@ -144,7 +144,7 @@ def getCharacterInfobox(name):
     dir = os.listdir(data_foler)    
     if name in dir:
     #check if stored 
-        print("PASS")
+        #print("PASS")
         #infobox = readCSV(data_foler + wanted_file)        
         infobox = graph.get(data_foler + name)
     # else
@@ -155,8 +155,10 @@ def getCharacterInfobox(name):
                 return None            
             # clean, structure and save
             uncleantext = html["parse"]["text"]["*"]        
-            text = cleanhtml(uncleantext, delimiter=", ")               
-            infobox = silver_standard.str_to_dict(name, text)            
+            text = cleanhtml(uncleantext, delimiter=", ") 
+            #print(text)             
+            infobox = silver_standard.str_to_dict(name, text)         
+            #print(infobox)
             save_to = "./data/character_infobox/" + name
             graph.add_relations(infobox, save_to)# writeCSV(save_to, infobox)
             #graph.add_relations(silver, file=save_to)                 

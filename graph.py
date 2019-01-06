@@ -9,7 +9,7 @@ def add_relations(relations, file="./data/edgelist"):
         relations: list of tuples (nameA, nameB, relationAtoB, text_from_extraction)
     """
     # TODO Check if file exists
-    print("Add relations")
+    #print("Add relations")
     if not os.path.exists(file):
         #create a directed graph which can have multiple edges between two nodes
         graph = nx.MultiDiGraph()
@@ -24,7 +24,7 @@ def add_relations(relations, file="./data/edgelist"):
         print(relations)
         print("Error: ", str(identifier))        
     
-    print(graph.edges)
+    #print(graph.edges)
 
     try:
         nx.write_edgelist(graph, file, delimiter="|")
