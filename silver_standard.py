@@ -5,10 +5,10 @@ import os
 
 import graph
 
-re_spouse = re.compile(r"Spouse\W*([ a-zA-Zíáóé]*)")
-re_children = re.compile(r"Children\W*([, a-zA-Zíáóé]*)")
-re_sibling = re.compile(r"Siblings\W*([, a-zA-Zíáóé]*)")
-re_parent = re.compile(r"Parentage\W*([, a-zA-Zí]*)")
+re_spouse = re.compile(r"Spouse\W*([ a-zA-Zíáóéä]*)")
+re_children = re.compile(r"Children\W*([, a-zA-Zíáóéä]*)")
+re_sibling = re.compile(r"Siblings\W*([, a-zA-Zíáóéä]*)")
+re_parent = re.compile(r"Parentage\W*([, a-zA-Zíáóéä]*)")
 def str_to_dict(name, str_data):
     str_data = str_data.replace("and", ", ")    
     result = []
@@ -28,7 +28,8 @@ def str_to_dict(name, str_data):
         for sibling in s:            
             result.append((str(name), str(sibling), {"relation":"sibling"}))
     if parent != None:
-        s = [s.strip() for s in parent.group(1).split(",") if s.split()]   
+        s = [s.strip() for s in parent.group(1).split(",") if s.split()]
+        s = [p for p in s if p not in ["father", "mother", "foster parent"]]
         for parent in s:
             result.append((str(name), str(parent), {"relation":"child"}))
 
@@ -37,17 +38,18 @@ def str_to_dict(name, str_data):
 
 def get_silver(name):
     infobox_data = filemanager.getCharacterInfobox(name)
-    print("get_silver")
-    print(infobox_data)
+    #print("get_silver")
+    #print(infobox_data)
     if infobox_data is None or infobox_data == [] or infobox_data == "":
         return None
 
     format_data = []
-    filter = ["Unnamed", "Unnamed wife", "Unknown", "None"]
+    filter = ["Unnamed", "Unnamed wife", "Unknown", "None", "Possible unnamed wife"]
     for row in infobox_data:
         if row[0] or row[1] or row[0] in filter or row[1] in filter:
+            if row[0][0].isupper() and row[1][0].isupper():
             # if either names are empty then skip
-            format_data.append((row[0], row[1], (row[2])))    
+                format_data.append((row[0], row[1], (row[2])))    
     return format_data
 
 
