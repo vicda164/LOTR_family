@@ -15,9 +15,6 @@ def find_family_relations(to_read=[], read_bios=[], relations=[]):
         For each name extract relations.
     """
     if len(to_read) == 0:
-        # create validation data
-        #for name in to_read:
-        #    filemanager.getCharacterInfobox(name)
         return relations
 
     name = to_read[0]
@@ -38,9 +35,10 @@ def find_family_relations(to_read=[], read_bios=[], relations=[]):
     else:
         return find_family_relations(to_read=to_read, read_bios=read_bios, relations=relations) 
     
-    relations += rel    
-    #print(rel)
-    relatives = np.array(rel)[:,1] # get column 1
+    # Don't add duplicates, thought add same relation again if found in different text.    
+    relations += [r for r in rel if r not in relations]    
+    # Get both first and second column, and no duplicates
+    relatives = np.unique( np.array(rel)[:,[0,1]].flatten())
     relatives = [r for r in relatives if r not in read_bios]
     to_read += relatives
     
@@ -52,7 +50,7 @@ def create_validation_data(to_read=[], read_bios=[], relations=[]):
         Recursivly read infoboxes of characters mentioned from the root name.        
     """
 
-    print(to_read, read_bios, relations)
+    #print(to_read, read_bios, relations)
     if len(to_read) == 0:
         return relations
 
@@ -67,9 +65,10 @@ def create_validation_data(to_read=[], read_bios=[], relations=[]):
         else:
             return relations
 
-    relations += rel
-    #print("rel:", rel)
-    relatives = np.array(rel)[:,1]
+    # Don't add duplicates    
+    relations += [r for r in rel if r not in relations] 
+    # Get both first and second column, and no duplicates
+    relatives = np.unique( np.array(rel)[:,[0,1]].flatten())
     relatives = [r for r in relatives if r not in read_bios]
     to_read += relatives
 
@@ -124,6 +123,9 @@ def _validate(family_set, silver_set):
         return (0,0,0)
     f1 = (2 * recall * precision) / (recall + precision)
 
+    print("Length of validation set:", len(silver_set))
+    print("Length of family set:", len(family_set))
+
     return (recall, precision, f1)
 
 @plac.annotations(
@@ -131,9 +133,10 @@ def _validate(family_set, silver_set):
     #model=("Model to use", "option", "m")
     disbale_cache=("Delete family tree from root name Name", "flag", "r"),
     validate=("Validate", "flag", "v"),
+    s=("Just get silver nothing else", "flag", "s"),
     draw=("Draw graph", "flag", "d"),
     fetchall=("Fetch all character desciptions of names in kaggle_data/Characters","flag","f"))
-def run(name, disbale_cache, validate, draw,fetchall):
+def run(name, disbale_cache, validate, s, draw,fetchall):
     if fetchall:
         print("Fetch all descriptions")
         names = filemanager.lotr_char_names()
@@ -150,6 +153,12 @@ def run(name, disbale_cache, validate, draw,fetchall):
         #    print("Error while training")
         return
 
+    if s:
+        if name in os.listdir("./data/silver/"):
+            os.remove("./data/silver/" + name)
+        silver = get_silver_family(name)
+        print(silver)
+        return
 
     
     if disbale_cache or name not in os.listdir("./data/family/"):        
@@ -197,3 +206,31 @@ if __name__ == "__main__":
     if "model" not in os.listdir():
         os.makedirs("./model")
     plac.call(run)
+
+
+
+#TODO TEST if get_silver is correct:
+# Test DATA for Elrond
+"""
+several daughters,Arwen,{'relation': 'parent'}
+Elladan,Elrond,{'relation': 'parent'}
+Vardamir Nólimon,Elros,{'relation': 'parent'}
+Vardamir Nólimon,Unnamed wife,{'relation': 'spouse'}
+Elrond,Elros,{'relation': 'sibling'}
+Elrond,Celebrían,{'relation': 'spouse'}
+Elros,Atanalcar,{'relation': 'parent'}
+Eldarion,Arwen,{'relation': 'parent'}
+Eldarion,Aragorn II Elessar,{'relation': 'parent'}
+Eldarion,Several unnamed sisters,{'relation': 'sibling'}
+Possible unnamed wife,Manwendil,{'relation': 'spouse'}
+Possible unnamed wife,Atanalcar,{'relation': 'spouse'}
+Elrohir,Arwen,{'relation': 'sibling'}
+Elrohir,Elrond,{'relation': 'parent'}
+Manwendil,Elros,{'relation': 'parent'}
+Arwen,Elladan,{'relation': 'sibling'}
+Arwen,Aragorn II Elessar,{'relation': 'spouse'}
+Arwen,Elrond,{'relation': 'parent'}
+Tindómiel,Elros,{'relation': 'parent'}
+Tindómiel,Unknown,{'relation': 'spouse'}
+Aragorn II Elessar,at least two daughters,{'relation': 'parent'}
+"""
