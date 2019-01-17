@@ -9,7 +9,12 @@ import secret
 
 
 def fecthWikiPage(name, section=1):
+    #return "" #inactivate due to bad internet
     name = name.strip() #remove whitespace
+    black_list = ["Unnamed", "Unnamed wife", "Unknown", "None", "Possible unnamed wife", "Several unnamed sisters"]
+    if name in black_list:
+        return ""
+
     print("wiki: try to fecth",name)
     S = requests.Session()
     #api.php?action=login&lgname=user&lgpassword=password
