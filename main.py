@@ -9,7 +9,7 @@ import graph
 import silver_standard as silver
 import train
 
-def find_family_relations(to_read=[], read_bios=[], relations=[], model="./model"):
+def find_family_relations(model, to_read=[], read_bios=[], relations=[]):
     """
         Recursivly read documents of characters that occur in a text from the root name.
         For each name extract relations.
@@ -25,24 +25,25 @@ def find_family_relations(to_read=[], read_bios=[], relations=[], model="./model
     to_read.remove(name)
 
     if char_bio != None:
-        rel = relation_extraction.extract_relations(char_bio, model)
-    
+        rel = relation_extraction.extract_relations(char_bio, model=model)
+
         if rel is None or rel == []:
             if len(to_read) > 0:
-                return find_family_relations(to_read=to_read, read_bios=read_bios, relations=relations) 
+                return find_family_relations(model=model, to_read=to_read, read_bios=read_bios, relations=relations) 
             else:  
                 return relations
     else:
-        return find_family_relations(to_read=to_read, read_bios=read_bios, relations=relations) 
+        return find_family_relations(model=model, to_read=to_read, read_bios=read_bios, relations=relations) 
     
     # Don't add duplicates, thought add same relation again if found in different text.    
     relations += [r for r in rel if r not in relations]    
     # Get both first and second column, and no duplicates
     relatives = np.unique( np.array(rel)[:,[0,1]].flatten())
-    relatives = [r for r in relatives if r not in read_bios]
+    print(relatives)
+    relatives = [r for r in relatives if r not in read_bios and r not in to_read]
     to_read += relatives
-    
-    return find_family_relations(to_read=to_read, read_bios=read_bios, relations=relations)
+
+    return find_family_relations(model=model, to_read=to_read, read_bios=read_bios, relations=relations)
     
 
 def create_validation_data(to_read=[], read_bios=[], relations=[]):
@@ -79,7 +80,7 @@ def get_silver_family(name):
     validation_data = []
 
     if name in os.listdir("./data/silver/"):
-        #print("EXISTS")
+        print("EXISTS")
         validation_data = graph.get(wanted_file)
     else:
         #if not os.path.exists(wanted_file):
@@ -172,6 +173,8 @@ def latex_tabell(name, family_no_model, family, silver):
     draw=("Draw graph", "flag", "d"),
     fetchall=("Fetch all character desciptions of names in kaggle_data/Characters","flag","f"))
 def run(name, disbale_cache, validate, svalidate, s, draw,fetchall):
+    MODEL = "./model"
+
     if fetchall:
         print("Fetch all descriptions")
         names = filemanager.lotr_char_names()
@@ -203,7 +206,7 @@ def run(name, disbale_cache, validate, svalidate, s, draw,fetchall):
         if name in os.listdir("./data/silver/"):
             os.remove("./data/silver/" + name)
 
-        family_tree = find_family_relations(to_read=[name])
+        family_tree = find_family_relations(to_read=[name], model=MODEL)
         family = graph.add_relations(family_tree, "./data/family/"+name)        
     else:     
         family = graph.get("./data/family/"+name)
@@ -212,11 +215,11 @@ def run(name, disbale_cache, validate, svalidate, s, draw,fetchall):
     print("RUN 1")    
     if validate:
         silver = get_silver_family(name)
-        (recall, precision, f1) = _validate(family, silver)
+        #(recall, precision, f1) = _validate(family, silver)
 
-        print("recall:", recall)
-        print("precisision:", precision)
-        print("F1:", f1)
+        #print("recall:", recall)
+        #print("precisision:", precision)
+        #print("F1:", f1)
 
 
         if draw:
@@ -235,7 +238,7 @@ def run(name, disbale_cache, validate, svalidate, s, draw,fetchall):
         silver = get_silver_family(name)
 
         if name not in os.listdir("./data/family/"):
-            family_tree = find_family_relations(to_read=[name], model="./model")
+            family_tree = find_family_relations(to_read=[name], model=MODEL)
             family = graph.add_relations(family_tree, "./data/family/"+name)        
         else:
             family = graph.get("./data/family/"+name)
