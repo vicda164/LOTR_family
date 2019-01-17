@@ -5,10 +5,10 @@ import os
 
 import graph
 
-re_spouse = re.compile(r"Spouse\W*([ a-zA-Zíáóéä]*)")
-re_children = re.compile(r"Children\W*([, a-zA-Zíáóéä]*)")
-re_sibling = re.compile(r"Siblings\W*([, a-zA-Zíáóéä]*)")
-re_parent = re.compile(r"Parentage\W*([, a-zA-Zíáóéä]*)")
+re_spouse = re.compile(r"Spouse\W*([ a-zA-Zíáóéëä]*)")
+re_children = re.compile(r"Children\W*([, a-zA-Zíáóéëä]*)")
+re_sibling = re.compile(r"Siblings\W*([, a-zA-Zíáóéëä]*)")
+re_parent = re.compile(r"Parentage\W*([, a-zA-Zíáóéëä]*)")
 def str_to_dict(name, str_data):
     str_data = str_data.replace("and", ", ")    
     result = []
@@ -19,19 +19,23 @@ def str_to_dict(name, str_data):
     if spouse != None:
         s = spouse.group(1)
         result.append((str(name), str(s), {"relation": "spouse"}))
+        #TODO add reversed relation
     if children != None:                    
         c = [c.strip() for c in children.group(1).split(",") if c.split()]
         for child in c:
-            result.append((str(name), str(child), {"relation": "parent"}))         
+            result.append((str(name), str(child), {"relation": "parent"})) 
+            #TODO add reversed relation        
     if sibling != None:        
         s = [s.strip() for s in sibling.group(1).split(",") if s.split()]          
         for sibling in s:            
             result.append((str(name), str(sibling), {"relation":"sibling"}))
+            #TODO add reversed relation
     if parent != None:
         s = [s.strip() for s in parent.group(1).split(",") if s.split()]
         s = [p for p in s if p not in ["father", "mother", "foster parent"]]
         for parent in s:
             result.append((str(name), str(parent), {"relation":"child"}))
+            #TODO add reversed relation
 
     #print("result:", result)
     return result
