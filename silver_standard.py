@@ -9,7 +9,7 @@ re_spouse = re.compile(r"Spouse\W*([ a-zA-Zíáóéëä]*)")
 re_children = re.compile(r"Children\W*([, a-zA-Zíáóéëä]*)")
 re_sibling = re.compile(r"Siblings\W*([, a-zA-Zíáóéëä]*)")
 re_parent = re.compile(r"Parentage\W*([, a-zA-Zíáóéëä]*)")
-def str_to_dict(name, str_data):
+def str_to_dict(name, str_data):    
     str_data = str_data.replace("and", ", ")    
     result = []
     spouse = re_spouse.search(str_data)
@@ -19,23 +19,23 @@ def str_to_dict(name, str_data):
     if spouse != None:
         s = spouse.group(1)
         result.append((str(name), str(s), {"relation": "spouse"}))
-        #TODO add reversed relation
+        result.append((str(s), str(name), {"relation": "spouse"}))        
     if children != None:                    
         c = [c.strip() for c in children.group(1).split(",") if c.split()]
         for child in c:
             result.append((str(name), str(child), {"relation": "parent"})) 
-            #TODO add reversed relation        
+            result.append((str(child), str(name), {"relation": "child"}))             
     if sibling != None:        
         s = [s.strip() for s in sibling.group(1).split(",") if s.split()]          
         for sibling in s:            
             result.append((str(name), str(sibling), {"relation":"sibling"}))
-            #TODO add reversed relation
+            result.append((str(sibling), str(name), {"relation":"sibling"}))            
     if parent != None:
         s = [s.strip() for s in parent.group(1).split(",") if s.split()]
         s = [p for p in s if p not in ["father", "mother", "foster parent"]]
         for parent in s:
             result.append((str(name), str(parent), {"relation":"child"}))
-            #TODO add reversed relation
+            result.append((str(parent), str(name), {"relation":"parent"}))            
 
     #print("result:", result)
     return result
@@ -48,7 +48,7 @@ def get_silver(name):
         return None
 
     format_data = []
-    filter = ["Unnamed", "Unnamed wife", "Unknown", "None", "Possible unnamed wife"]
+    filter = ["Unnamed", "Unnamed wife", "Unknown", "None", "Possible unnamed wife","Several unnamed sisters"]
     for row in infobox_data:
         if row[0] or row[1] or row[0] in filter or row[1] in filter:
             if row[0][0].isupper() and row[1][0].isupper():
