@@ -77,7 +77,8 @@ def create_train_data():
 
 
 
-def train(train_set, model="en_core_web_sm"):
+def train(train_set, save_to, model="en_core_web_sm"):
+    # save_to = "./model"
     # try simple implemantion from example on https://spacy.io/usage/training
     #TRAIN_DATA = [
     # ("Uber blew through $1 million a week", {'entities': [(0, 4, 'ORG')]}),
@@ -88,21 +89,26 @@ def train(train_set, model="en_core_web_sm"):
     other_pipes = [pipe for pipe in nlp.pipe_names if pipe != "ner"]
     print("0 of", len(train_set))
     with nlp.disable_pipes(*other_pipes):  # only train NER
-        for i in range(len(train_set)):
+        for i in range(5*len(train_set)):
             random.shuffle(train_set)
             for text, annotations in train_set:            
                 #annotations = {"entities" : annotations} # adjust format            
-                annotations = ast.literal_eval(annotations)
+                try:
+                    annotations = ast.literal_eval(annotations)
+                except Exception as identifier:
+                    print("ERROR: bad format: ", text)
+                    return
+                
                 try:
                     nlp.update([text], [annotations], sgd=optimizer)
                 except Exception as identifier:
                     print("ERROR:", str(identifier))
-                    nlp.to_disk('./model')
+                    nlp.to_disk(save_to)
             
             if i % 10 == 0:
                 print(i,"of",len(train_set))
 
-    nlp.to_disk('./model')
+    nlp.to_disk(save_to)
     return "OK"
 
 if __name__ == '__main__':
@@ -110,6 +116,10 @@ if __name__ == '__main__':
     #filemanager.writeCSV("./train_set_val", train_set, delimiter="|",quotechar='"')
     #train_set = filemanager.readCSV("./train_set", delimiter="|",quotechar='"')
     #train(train_set)
-    s = [("Elrond Half-elven is the son of Eärendil and Elwing, and a great-grandson of Lúthien.","{'entities': [(0, 17, 'PERSON'), (77, 84, 'PERSON'),(32, 40, 'PERSON'), (45, 51, 'PERSON')]}")]
-    train(s, "./model")
+    s = [("Celebrían (IPA: [keleˈbriːan]) was an Elven noblewoman, the daughter of Celeborn and Galadriel, wife of Elrond, and mother of Elrohir, Elladan and Arwen. ","{'entities': [(0, 9, 'PERSON'), (72,80,'PERSON'), (85,94,'PERSON'),(104,110,'PERSON'),(126,133,'PERSON'),(135,142, 'PERSON'),(147,152, 'PERSON')]}"),
+ ("They included three sons, Vardamir Nólimon, Manwendil, and Atanalcar, and a daughter, Tindómiel.","{'entities': [(59, 68, 'PERSON'), (44, 53, 'PERSON'), (26, 42, 'PERSON'),(86,95,'PERSON')]}"),
+ ("Besides Aragorn, Gandalf, and Frodo, the company included Frodo's cousins Pippin and Merry, his best friend Samwise Gamgee, Legolas the elf, Gimli the Dwarf, and Boromir of Gondor. Before the group set out, the shards of Narsil were reforged, and the restored blade was named Andúril.", "{'entities': [(8,15,'PERSON'),(17,24, 'PERSON'), (30,35,'PERSON'),(58,63,'PERSON'),(74,80,'PERSON'),(85,90,'PERSON'),(108,122,'PERSON'), (124, 131, 'PERSON'),(141,146,'PERSON'),(162, 169, 'PERSON')]}"),
+ ("Elrond Half-elven is the son of Eärendil and Elwing, and a great-grandson of Lúthien.", "{'entities': [(0, 17, 'PERSON'), (77, 84, 'PERSON'),(32, 40, 'PERSON'), (45, 51, 'PERSON')]}"),
+ ("Argon was the younger brother of Fingon, Turgon, and Aredhel his elder sister.", "{'entities': [(0, 5, 'PERSON'), (33, 49, 'PERSON'),(41, 47, 'PERSON'), (53, 60, 'PERSON')]}")]
+    train(s, save_to="./model_slim", model="./model_slim")
     
