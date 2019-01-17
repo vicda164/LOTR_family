@@ -77,13 +77,13 @@ def create_train_data():
 
 
 
-def train(train_set):
+def train(train_set, model="en_core_web_sm"):
     # try simple implemantion from example on https://spacy.io/usage/training
     #TRAIN_DATA = [
     # ("Uber blew through $1 million a week", {'entities': [(0, 4, 'ORG')]}),
     # ("Google rebrands its business apps", {'entities': [(0, 6, "ORG")]})]
 
-    nlp = spacy.load("en_core_web_sm")#spacy.blank('en')
+    nlp = spacy.load(model) #spacy.blank('en')    
     optimizer = nlp.begin_training()
     other_pipes = [pipe for pipe in nlp.pipe_names if pipe != "ner"]
     print("0 of", len(train_set))
@@ -106,7 +106,10 @@ def train(train_set):
     return "OK"
 
 if __name__ == '__main__':
-    train_set = create_train_data()
+    #train_set = create_train_data()
     #filemanager.writeCSV("./train_set_val", train_set, delimiter="|",quotechar='"')
     #train_set = filemanager.readCSV("./train_set", delimiter="|",quotechar='"')
     #train(train_set)
+    s = [("Elrond Half-elven is the son of Eärendil and Elwing, and a great-grandson of Lúthien.","{'entities': [(0, 17, 'PERSON'), (77, 84, 'PERSON'),(32, 40, 'PERSON'), (45, 51, 'PERSON')]}")]
+    train(s, "./model")
+    
