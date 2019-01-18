@@ -36,12 +36,13 @@ def add_relations(relations, file="./data/edgelist"):
 
 def get(file):
     #print("get_family_tree", file)
-    graph = nx.read_edgelist(file, delimiter="|").edges(data=True)
+    # TODO? maybe we just want to get all connected relations(no outliers)??? use .edges(data=True,nbunch="Elrond") recursivly 
+    graph = nx.read_edgelist(file, delimiter="|", create_using=nx.MultiDiGraph()).edges(data=True)
     #print(graph)
     return graph
 
 def draw(file, file2=None):    
-    graph = nx.read_edgelist(file, delimiter="|", create_using=nx.Graph())
+    graph = nx.read_edgelist(file, delimiter="|", create_using=nx.MultiDiGraph())
     if file2 != None:
         plt.subplot()
 
@@ -58,7 +59,7 @@ def draw(file, file2=None):
 
     if file2 != None:
         plt.subplot()
-        g2= nx.read_edgelist(file2, delimiter="|", create_using=nx.Graph())
+        g2= nx.read_edgelist(file2, delimiter="|", create_using=nx.MultiDiGraph())
         pos2 = nx.spring_layout(g2)
         #edge_labels = nx.get_edge_attributes(g2, 'relation')
         edge_labels=dict([((u,v,),d['relation'])
@@ -74,7 +75,7 @@ def draw(file, file2=None):
 if __name__ == '__main__':
     #add_relations([("Sansa", "Jon", {"relation":"siblings", "text":"text bla bla"})])
     #draw_graph()
-    get("data/character_infobox/Elrond")
+    print(get("data/character_infobox/Elrond"))
 
 
 """
