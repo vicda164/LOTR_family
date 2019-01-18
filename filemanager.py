@@ -86,11 +86,15 @@ def getFromText(name):
     if ".txt" in name:
         filename = name
     else:
+        name = name.strip()
         filename = DATA_FOLDER + name + ".txt"
         
     try:
         with open(filename, "r") as file:
-            return file.read()
+            text =  file.read()
+            text = text.replace(u'\xa0', u' ')
+            text = text.replace(u'&#160;', u' ')
+            return text
     except Exception as identifier:
         return "ERROR: " + str(identifier)
     
@@ -100,6 +104,7 @@ def saveToText(filename, text):
     """
     Saves biography as text to .txt file.
     """
+    filename = filename.strip()
     filename = DATA_FOLDER + filename + ".txt"
     try:
         with open(filename, "w") as file:
@@ -155,7 +160,9 @@ def getCharacterInfobox(name):
                 return None            
             # clean, structure and save
             uncleantext = html["parse"]["text"]["*"]        
-            text = cleanhtml(uncleantext, delimiter=", ") 
+            text = cleanhtml(uncleantext, delimiter=", ")
+            text = text.replace(u'\xa0', u' ')
+            text = text.replace(u'&#160;', u' ')
             #print(text)             
             infobox = silver_standard.str_to_dict(name, text)         
             #print(infobox)
