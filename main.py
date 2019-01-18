@@ -108,23 +108,26 @@ def _validate(family_set, silver_set):
     true_positive = []
     false_relation_but_correct_pair = []
     family = []
+    #family_names = np.array(silver)[:,[1,2]].flatten()
     for relation in family_set:
         #print(relation)
         rel = relation[2]["relation"]
         edge = (relation[0], relation[1], {"relation":rel})
         family.append(edge)
-        if edge in silver_set:
+        if edge in silver_set:# and edge[0] in family_names:
             true_positive.append(edge)            
+            #elif and edge[0] in family_names:
         else:
             false_positive.append(edge)        
 
     count = 0
     # TODO: validate if correct. do tests
     for relation in false_positive:
-        for s in silver_set:
-            count += 1
-            if edge[0:2] == s[0:2]:
-                false_relation_but_correct_pair.append(edge)
+        count += 1
+        for s in silver_set:            
+            if relation[0:2] == s[0:2]:
+                false_relation_but_correct_pair.append(relation)
+                print(relation, s)
                 break
     #print("fp:", len(false_relation_but_correct_pair))
     print(count)
@@ -140,6 +143,8 @@ def _validate(family_set, silver_set):
 
     silver_minus_intersect = [i for i in silver_set if i not in true_positive]
     family_minus_intersect = [i for i in family if i not in true_positive]
+    print("####")
+    print(len(silver_minus_intersect), len(family_minus_intersect), len(false_relation_but_correct_pair))
     recall_pair = len(false_relation_but_correct_pair) / len(silver_minus_intersect)
     precision_pair = len(false_relation_but_correct_pair) / len(family_minus_intersect)
     if recall_pair + precision_pair == 0:
@@ -157,9 +162,9 @@ def latex_tabell(name, family_no_model, family, silver):
     (recall, precision, f1, rp, pp, fp) = _validate(family, silver)
     print("\multicolumn{{1}}{{c}}{} & \\\ \cline{{1-3}}".format(name))
     print("Measure     & Before training & After Training \\\ \hline")
-    print("Recall      & {:.2f}({:.2f})     & {:.2f}({:.2f})    \\\ ".format(recall0, rp0, recall, rp))
-    print("Precision   & {:.2f}({:.2f})     & {:.2f}({:.2f})     \\\ ".format(precision0, pp0, precision, pp))
-    print("F1-score    & {:.2f}({:.2f})     & {:.2f}({:.2f})     \\\ ".format(f10, fp0, f1, fp))
+    print("Recall      & {:.2f}({:.2f})     & {:.2f}({:.2f})    \\\ ".format(recall0, recall0 + rp0, recall, recall+rp))
+    print("Precision   & {:.2f}({:.2f})     & {:.2f}({:.2f})     \\\ ".format(precision0, precision0+pp0, precision, precision+pp))
+    print("F1-score    & {:.2f}({:.2f})     & {:.2f}({:.2f})     \\\ ".format(f10,f10+ fp0, f1, f1+fp))
     print("Relations   & {}({})     & {}({})      \\\ \hline".format(len(family_no_model), len(silver), len(family), len(silver)))
     #print("".format())
 
@@ -173,15 +178,15 @@ def latex_tabell(name, family_no_model, family, silver):
     draw=("Draw graph", "flag", "d"),
     fetchall=("Fetch all character desciptions of names in kaggle_data/Characters","flag","f"))
 def run(name, disbale_cache, validate, svalidate, s, draw,fetchall):
-    MODEL = "./model"
+    MODEL = "./model_slim"
 
     if fetchall:
         print("Fetch all descriptions")
         names = filemanager.lotr_char_names()
         for name in names:
             filemanager.getCharacterDescription(name)
-        print("DONE")
         
+        print("DONE")
         #print("Train")
         #status = train.train(training_set)
         #if status == "OK":
