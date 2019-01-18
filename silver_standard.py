@@ -10,7 +10,7 @@ re_children = re.compile(r"Children\W*([, a-zA-Zíáóéëä]*)")
 re_sibling = re.compile(r"Siblings\W*([, a-zA-Zíáóéëä]*)")
 re_parent = re.compile(r"Parentage\W*([, a-zA-Zíáóéëä]*)")
 def str_to_dict(name, str_data):    
-    str_data = str_data.replace("and", ", ")    
+    str_data = str_data.replace(" and   ", ", ")    
     result = []
     spouse = re_spouse.search(str_data)
     children = re_children.search(str_data)
